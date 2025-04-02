@@ -1,9 +1,14 @@
+const sample_resolution = 5;
+
 var canvas = null;
 var canvas_context = null;
 var svg = null;
 var slider = null;
 var sliderValue = null;
+var current_circle = null;
 var current_pitch = 60;
+var current_timbre = [0.0, 0.0];
+var current_octave = 60;
 
 document.addEventListener("DOMContentLoaded", function(event) {
     canvas = document.getElementById('selection_canvas');
@@ -28,11 +33,11 @@ document.addEventListener("DOMContentLoaded", function(event) {
         relative_xy = [clamp(relative_xy[0], 0.0, 0.999), 1 - clamp(relative_xy[1], 0.0, 0.999)];
         
         // Compute the sample indices (using external models and active_model)
-        let sn = 5;
         let squareIndex = [
-            Math.floor(relative_xy[0] * sn),
-            Math.floor(relative_xy[1] * sn)
+            Math.floor(relative_xy[0] * sample_resolution),
+            Math.floor(relative_xy[1] * sample_resolution)
         ];
+		current_timbre = [squareIndex[0], squareIndex[1]];
         let wav_path = 'data/generate_audio/' +
 		pad(current_pitch, 3) + '_' + pad(squareIndex[0], 3) + '_' + pad(squareIndex[1], 3) + '.wav';
         console.log(mouse_xy[0] + ' ' + mouse_xy[1] + ' - ' +
@@ -40,6 +45,10 @@ document.addEventListener("DOMContentLoaded", function(event) {
         play_wav(wav_path);
 
         // Create and animate the click effect (circle)
+		if(current_circle != null) {
+			svg.removeChild(current_circle);
+		}
+		
         let circle_pos = [relative_xy[0] * 2 - 1, (1 - relative_xy[1]) * 2 - 1];
         const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
         circle.setAttribute('cx', circle_pos[0]);
@@ -49,9 +58,13 @@ document.addEventListener("DOMContentLoaded", function(event) {
         circle.setAttribute('stroke', 'black');
         circle.setAttribute('stroke-width', 0.002);
         svg.appendChild(circle);
+		current_circle = circle;
 
-        fadeOut(circle, 1000);
+        //fadeOut(circle, 1000);
     }, true);
+
+
+
 
     slider.addEventListener("input", function() {
         change_pitch(slider.value);
@@ -59,12 +72,53 @@ document.addEventListener("DOMContentLoaded", function(event) {
     
     function change_pitch(value) {
 		sliderValue.textContent = value;
+		slider.value = value;
 		current_pitch = value;
         console.log("Slider changed to:", current_pitch);
         change_img("data/generate_scatter/" + pad(current_pitch, 3) + ".svg");
     }
 
 	change_pitch(current_pitch);
+
+	// Mapping of computer keys to semitone shifts relative to a base note (e.g., "A")
+	const keyToSemitone = {
+		'a': 0,    // Base note
+		'w': 1,    // One semitone up
+		's': 2,    // Two semitones up
+		'e': 3,    // Three semitones up
+		'd': 4,    // Four semitones up
+		'f': 5,    // Five semitones up
+		't': 6,    // Six semitones up
+		'g': 7,    // Seven semitones up
+		'y': 8,    // Eight semitones up
+		'h': 9,    // Nine semitones up
+		'u': 10,   // Ten semitones up
+		'j': 11,   // Eleven semitones up
+		'k': 12    // One octave above the base
+	};
+	
+	// Listen for keydown events
+	document.addEventListener("keydown", function (event) {
+		// Ignore repeated key events
+		if (event.repeat) return;
+		const key = event.key.toLowerCase();
+		if (keyToSemitone.hasOwnProperty(key)) {
+			// Calculate playback rate using 2^(n/12) where n is the semitone difference
+			const semitone = keyToSemitone[key] + current_octave;
+			change_pitch(semitone);
+			let wav_path = 'data/generate_audio/' +
+			pad(current_pitch, 3) + '_' + pad(current_timbre[0], 3) + '_' + pad(current_timbre[1], 3) + '.wav';
+			play_wav(wav_path);
+		} else if(key == 'q') {
+			if(current_octave == 48) {
+				current_octave = 60;
+			} else {
+				current_octave = 48;
+			}
+		}
+	});
+  
+
 });
 
 //
