@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="TODO">
+    <meta name="author" content="TODO">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    
+    <title>Mapping the Audio Landscape for Innovative Music Sample Generation</title>
+    
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+    <script src="js/audio_demo.js" defer></script>
+</head>
+<body>
+    <div id="outer">
+        <div id="inner">
+            <section id="headsection">
+                <div id="inner_headsection">
+                    <h1 id="title">Pitch-Conditioned Instrument Sound Synthesis from an Interactive Timbre Latent Space</h1>
+                    <h3 id="authors">Authors: Christian Limberg*, Fares Schulz*, Zhe Zhang, Stefan Weinzierl</h3>
+                    <h2 id="abstract">Abstract</h2>
+                    <p id="abstract_txt">
+                        This paper presents a novel approach to instrument sound generation using a two-stage semi-supervised learning method capable of generating pitch-accurate, high-quality music samples from an expressive timbre latent space. Building upon our previous Generative Sample Map (GESAM) framework, which compresses the manifold of a drum sound dataset into a two-dimensional audio map, this method extends the representation of various musical instruments with pitch conditioning. In addition to the GESAM framework with a latent space learned via a Variational Autoencoder (VAE) and a Transformer model as the sound generator, we further propose a learning scheme that realizes the disentanglement of pitch and timbre information in the latent space. We demonstrate that the proposed method effectively learns a disentangled timbre latent space, enabling a more expressive and controllable generation process with effective pitch conditioning. The model’s performance is evaluated through a series of experiments, showing its ability to capture fine nuances in timbre while maintaining a high level of pitch accuracy. Finally, we showcase the usability of our approach through an interactive web application, which will be made publicly accessible.
+                    </p>
+                </div>
+            </section>
+
+            <section class="figure">
+                <div class="inner_figure">
+                    <h3 class="figure_title">Audio Sample Generator</h3>
+                    <div id="slider_container">
+                        <input type="range" id="size_slider" min="48" max="72" value="60">
+                        <span id="slider_value">60</span>
+                    </div>
+                    <div id="selection_div">
+                        <canvas id="selection_canvas"></canvas>
+                        <svg viewBox="-1 -1 2 2" id="selection_svg"></svg>
+                    </div>
+                    <p class="figure_caption">
+                        Our interactive interface lets you generate musical samples by selecting points on a 2D plane. A fraction of the training data is displayed for orientation. The background is colored in the average colors of the nearest neighboring samples. Click on a certain location to play the related sample (speaker or headphones required).
+                    </p>
+                </div>
+            </section>
+
+            <section class="figure">
+                <div class="inner_figure">
+                    <h3 class="figure_title">Model Architecture</h3>
+                    <img src="gfx/gesam.png" alt="Model Architecture" style="width:100%;">
+                    <p class="figure_caption">
+                        This schematic depicts the training procedure of our model. In the first stage, a VAE with a 2D latent bottleneck is trained. In the second stage, the Transformer model is trained with the VAE as a conditioning model.
+                    </p>
+                </div>
+            </section>
+
+            <section class="figure">
+                <div class="inner_figure">
+                    <h3 class="figure_title">Cite Us</h3>
+                    <pre id="citebox">This demo paper has to be accepted first before a reference will spawn here.</pre>
+                </div>
+            </section>
+        </div>
+    </div>
+</body>
+</html>
