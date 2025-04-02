@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		sliderValue.textContent = value;
 		current_pitch = value;
         console.log("Slider changed to:", current_pitch);
-        change_img("/data/generate_scatter/" + pad(current_pitch, 3) + ".svg");
+        change_img("data/generate_scatter/" + pad(current_pitch, 3) + ".svg");
     }
 
 	change_pitch(current_pitch);
